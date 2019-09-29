@@ -1,0 +1,47 @@
+name: Reproduce the issue
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        Redmine: ['4.0.4']
+    env:
+      REDMINE: ${{ matrix.Redmine }}
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.6.x
+    - name: Install Redmine
+      run: |
+        curl http://www.redmine.org/releases/redmine-${REDMINE}.tar.gz | tar zx
+        mv redmine-${REDMINE} redmine
+    - name: Install a demo plugin
+      run: rsync -a overlay redmine
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+      working-directory: redmine
+    - name: Apply migrations
+      run: rails db:create db:migrate redmine:plugins:migrate
+      working-directory: redmine
+    - name: Run db:reset
+      run: rails db:reset
+      working-directory: redmine
+    - name: Reproduce the issue
+      run: |
+        rails redmine:plugins:migrate &> /tmp/stderr
+        [ $? -eq 0 ] || { echo 'Migration succeeded.'; exit 1 }
+        grep 'table "foos" already exists' /tmp/stderr || {
+          echo 'Unexpected error message:'
+          cat /tmp/stderr
+          exit 1
+        }
+      working-directory: redmine
