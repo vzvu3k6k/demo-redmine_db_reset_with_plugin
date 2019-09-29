@@ -47,4 +47,5 @@ jobs:
           cat /tmp/stderr
           exit 1
         }
+        cat /tmp/stderr
       working-directory: redmine
