@@ -39,7 +39,7 @@ jobs:
     - name: Reproduce the issue
       run: |
         rails redmine:plugins:migrate &> /tmp/stderr
-        [ $? -eq 0 ] || { echo 'Migration succeeded.'; exit 1 }
+        [ $? -eq 0 ] || { echo 'Migration succeeded.'; exit 1; }
         grep 'table "foos" already exists' /tmp/stderr || {
           echo 'Unexpected error message:'
           cat /tmp/stderr
