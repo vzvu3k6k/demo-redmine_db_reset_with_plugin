@@ -23,7 +23,7 @@ jobs:
         curl http://www.redmine.org/releases/redmine-${REDMINE}.tar.gz | tar zx
         mv redmine-${REDMINE} redmine
     - name: Install a demo plugin
-      run: rsync -a overlay/ redmine
+      run: rsync -av overlay/ redmine
     - name: Install dependencies
       run: |
         gem install bundler
