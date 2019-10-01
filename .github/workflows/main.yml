@@ -27,8 +27,8 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev
-        gem install bundler
-        bundle install --jobs 4 --retry 3
+        gem install bundler -v 1.17.3 # Redmine 3.4 requires bundler (>= 1.5.0, < 2.0.0)
+        bundle _1.17.3_ install --jobs 4 --retry 3
       working-directory: redmine
     - name: Apply migrations
       run: rails db:create db:migrate redmine:plugins:migrate
