@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        Redmine: ['4.0.4']
+        Redmine: ['4.0.4', '3.4.11']
     env:
       REDMINE: ${{ matrix.Redmine }}
     steps:
