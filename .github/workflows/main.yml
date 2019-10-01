@@ -31,14 +31,14 @@ jobs:
         bundle _1.17.3_ install --jobs 4 --retry 3
       working-directory: redmine
     - name: Apply migrations
-      run: rails db:create db:migrate redmine:plugins:migrate
+      run: rake db:create db:migrate redmine:plugins:migrate
       working-directory: redmine
     - name: Run db:reset
-      run: rails db:reset
+      run: rake db:reset
       working-directory: redmine
     - name: Reproduce the issue
       run: |
-        rails redmine:plugins:migrate &> /tmp/stderr && {
+        rake redmine:plugins:migrate &> /tmp/stderr && {
           echo 'Migration succeeded.'
           exit 1
         }
